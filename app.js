@@ -1,10 +1,32 @@
 require('dotenv').config();
 
 const express = require('express');
+const graphqlHTTP = require('express-graphql');
+const cors = require('cors');
+
 const app = express();
+const bodyParser = require('body-parser');
 
-const port = process.env.PORT || 8000;
+const { PORT } = process.env;
 
-app.listen(port, () => {
-  console.log(`server running on PORT ${port}`);
+const schema = require('./schema/');
+
+app.use(cors());
+
+app.use(bodyParser.urlencoded({
+  extended: true,
+}));
+
+app.use(bodyParser.json({
+  limit: '50mb',
+}));
+
+app.use('/graphql', graphqlHTTP({
+  schema,
+  graphiql: true,
+}));
+app.use('/api/auth', require('./routes/auth'))
+
+app.listen(PORT, () => {
+  console.log(`Server running on PORT ${PORT}`);
 });
