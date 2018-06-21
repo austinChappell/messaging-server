@@ -36,7 +36,7 @@ class MethodConstructor {
     const values = Object.values(obj);
     const conditions = keys.map((k, i) => {
       return `${k} = $${i + 1}`;
-    }).join('');
+    }).join(' AND ');
     const sql = `
       SELECT * FROM ${this.tableName}
         WHERE (${conditions})
@@ -44,6 +44,21 @@ class MethodConstructor {
     const params = values;
     const results = await dbRes(sql, params);
     return results[0];
+  }
+
+  async findAllBy (obj) {
+    const keys = Object.keys(obj);
+    const values = Object.values(obj);
+    const conditions = keys.map((k, i) => {
+      return `${k} = $${i + 1}`;
+    }).join(' AND ');
+    const sql = `
+      SELECT * FROM ${this.tableName}
+        WHERE (${conditions})
+    `;
+    const params = values;
+    const results = await dbRes(sql, params);
+    return results;
   }
 
   async findAll () {
