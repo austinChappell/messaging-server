@@ -32,8 +32,6 @@ class Message extends ModelConstructor {
       OR (sender_id = $1 AND recipient_id = $2)
     `;
     const params = [sender, recipient];
-    console.log('SQL', sql);
-    console.log('PARAMS', params);
     return await dbRes(sql, params);
   }
 
@@ -46,8 +44,6 @@ class Message extends ModelConstructor {
       LIMIT 1
     `;
     const params = [sender, recipient];
-    console.log('SQL', sql);
-    console.log('PARAMS', params);
     return await dbRes(sql, params);
   }
 

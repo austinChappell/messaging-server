@@ -45,6 +45,8 @@ const UserType = new GraphQLObjectType({
         },
       },
       async resolve(parent, args) {
+        console.log('PARENT', parent);
+        console.log('ARGS', args)
         const messages = await message.pair(Number(args.id), parent.id);
         return messages;
       }
