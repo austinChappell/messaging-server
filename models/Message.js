@@ -1,7 +1,7 @@
 const ModelConstructor = require('./constructor');
 const dbHelpers = require('../helpers/db.helpers');
 
-const { dbAction } = dbHelpers;
+const { dbAction, dbRes } = dbHelpers;
 
 class Message extends ModelConstructor {
   constructor() {
@@ -23,6 +23,32 @@ class Message extends ModelConstructor {
     `;
     const params = [];
     dbAction(sql, params);
+  }
+  
+  async pair(sender, recipient) {
+    const sql = `
+    SELECT * FROM ${this.tableName}
+      WHERE (recipient_id = $1 AND sender_id = $2)
+      OR (sender_id = $1 AND recipient_id = $2)
+    `;
+    const params = [sender, recipient];
+    console.log('SQL', sql);
+    console.log('PARAMS', params);
+    return await dbRes(sql, params);
+  }
+
+  async pairLast(sender, recipient) {
+    const sql = `
+    SELECT * FROM ${this.tableName}
+      WHERE (recipient_id = $1 AND sender_id = $2)
+      OR (sender_id = $1 AND recipient_id = $2)
+      ORDER BY timestamp DESC
+      LIMIT 1
+    `;
+    const params = [sender, recipient];
+    console.log('SQL', sql);
+    console.log('PARAMS', params);
+    return await dbRes(sql, params);
   }
 
 }

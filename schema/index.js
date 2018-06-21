@@ -37,6 +37,30 @@ const UserType = new GraphQLObjectType({
     id: { type: GraphQLID },
     first_name: { type: GraphQLString },
     last_name: { type: GraphQLString },
+    messages: {
+      type: new GraphQLList(MessageType),
+      args: {
+        id: {
+          type: GraphQLID,
+        },
+      },
+      async resolve(parent, args) {
+        const messages = await message.pair(Number(args.id), parent.id);
+        return messages;
+      }
+    },
+    last_message: {
+      type: MessageType,
+      args: {
+        id: {
+          type: GraphQLID,
+        },
+      },
+      async resolve(parent, args) {
+        const messages = await message.pairLast(Number(args.id), parent.id);
+        return messages[0];
+      }
+    }
   }),
 });
 
