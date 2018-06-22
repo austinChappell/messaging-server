@@ -133,7 +133,18 @@ const Mutation = new GraphQLObjectType({
   },
 })
 
+const Subscription = new GraphQLObjectType({
+  name: 'subscription',
+  fields: {
+    messageAdded: {
+      type: MessageType,
+      resolve: source => source,
+    }
+  }
+})
+
 module.exports = new GraphQLSchema({
   query: RootQuery,
   mutation: Mutation,
+  subscription: Subscription,
 });
