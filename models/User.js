@@ -94,17 +94,6 @@ class User extends ModelConstructor {
       }
     });
 
-    // if (user) {
-    //   console.log('LOG THE USER IN')
-    // } else {
-    //   const userObj = {
-    //     first_name: firstName,
-    //     last_name: lastName,
-    //     email,
-    //   };
-    //   userObj[socialMediaLabel] = accessToken;
-    //   user.create()
-    // }
   }
 }
 
