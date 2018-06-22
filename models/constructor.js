@@ -62,7 +62,6 @@ class MethodConstructor {
   }
 
   async findAll () {
-    console.log('FINDINGN ALL', this.tableName);
     const sql = `
       SELECT * FROM ${this.tableName}
     `;

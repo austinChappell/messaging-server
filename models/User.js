@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const { SERVER_SECRET } = process.env;
 
-const { dbAction } = dbHelpers;
+const { dbAction, dbRes } = dbHelpers;
 
 const socialData = {
   facebook: {
@@ -40,6 +40,15 @@ class User extends ModelConstructor {
     `;
     const params = [];
     dbAction(sql, params);
+  }
+
+  async findAll () {
+    const sql = `
+      SELECT * FROM ${this.tableName}
+        ORDER BY first_name
+    `;
+    const params = [];
+    return await dbRes(sql, params);
   }
 
   async socialAuth(userData, res) {
