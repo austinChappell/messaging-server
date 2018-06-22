@@ -72,16 +72,13 @@ const RootQuery = new GraphQLObjectType({
         return await message.findAll();
       }
     },
-    myMessages: {
+    myUnreadMessages: {
       type: new GraphQLList(MessageType),
       args: {
         id: { type: GraphQLID },
       },
       async resolve(parent, args) {
-        return await message.findAllBy({
-          recipient_id: args.id,
-          sender_id: args.id,
-        });
+        return await message.userUnreadMessages(args.id);
       }
     },
     user: {
@@ -130,6 +127,21 @@ const Mutation = new GraphQLObjectType({
         return await message.create(args);
       }
     },
+    readMessages: {
+      type: MessageType,
+      args: {
+        sender_id: {
+          type: new GraphQLNonNull(GraphQLID),
+        },
+        recipient_id: {
+          type: new GraphQLNonNull(GraphQLID),
+        },
+      },
+      async resolve(parent, args) {
+        console.log('RESOLVER RUNNING')
+        return await message.markUnread(args.recipient_id, args.sender_id);
+      }
+    }
   },
 })
 

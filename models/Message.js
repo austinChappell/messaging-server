@@ -30,6 +30,7 @@ class Message extends ModelConstructor {
     SELECT * FROM ${this.tableName}
       WHERE (recipient_id = $1 AND sender_id = $2)
       OR (sender_id = $1 AND recipient_id = $2)
+      ORDER BY timestamp
     `;
     const params = [sender, recipient];
     return await dbRes(sql, params);
@@ -44,6 +45,27 @@ class Message extends ModelConstructor {
       LIMIT 1
     `;
     const params = [sender, recipient];
+    return await dbRes(sql, params);
+  }
+
+  async userUnreadMessages(id) {
+    const sql = `
+      SELECT * FROM ${this.tableName}
+        WHERE recipient_id = $1 AND read = $2
+    `;
+    const params = [id, false];
+    return await dbRes(sql, params);
+  }
+
+  async markUnread(recipientId, senderId) {
+    console.log('MARKING AS READ')
+    const sql = `
+      UPDATE ${this.tableName}
+        SET read = $1
+        WHERE recipient_id = $2 AND sender_id = $3
+        RETURNING *
+    `;
+    const params = [true, recipientId, senderId];
     return await dbRes(sql, params);
   }
 
