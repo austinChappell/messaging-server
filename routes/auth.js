@@ -58,10 +58,8 @@ router.post('/verify_token', async (req, res) => {
   const { token } = req.body;
   const decoded = jwt.verify(token, SERVER_SECRET);
   const foundUser = await user.findById(decoded.id);
-  console.log('USER', foundUser);
   const refreshToken = jwt.sign({ id: foundUser.id }, SERVER_SECRET);
   foundUser.token = refreshToken;
-  console.log('FOUND USER', foundUser);
   res.json(foundUser);
 })
 
