@@ -35,6 +35,14 @@ io.on('connection', (client) => {
   client.on('SEND_MESSAGE', (message) => {
     io.emit('RECEIVE_MESSAGE', message)
   })
+
+  client.on('SEND_TYPING', data => {
+    io.emit('RECEIVE_TYPING', data);
+  })
+
+  client.on('STOP_TYPING', data => {
+    io.emit('RECEIVE_STOP_TYPING', data);
+  })
 });
 
 server.listen(PORT, () => {
