@@ -45,10 +45,7 @@ const UserType = new GraphQLObjectType({
         },
       },
       async resolve(parent, args) {
-        console.log('PARENT', parent);
-        console.log('ARGS', args)
-        const messages = await message.pair(Number(args.id), parent.id);
-        return messages;
+        return await message.pair(Number(args.id), parent.id);
       }
     },
     last_message: {
@@ -72,8 +69,7 @@ const RootQuery = new GraphQLObjectType({
     messages: {
       type: new GraphQLList(MessageType),
       async resolve(parent, args) {
-        const messages = await message.findAll();
-        return messages;
+        return await message.findAll();
       }
     },
     myMessages: {
@@ -82,11 +78,10 @@ const RootQuery = new GraphQLObjectType({
         id: { type: GraphQLID },
       },
       async resolve(parent, args) {
-        const messages = await message.findAllBy({
+        return await message.findAllBy({
           recipient_id: args.id,
           sender_id: args.id,
         });
-        return messages;
       }
     },
     user: {
@@ -103,8 +98,7 @@ const RootQuery = new GraphQLObjectType({
     users: {
       type: new GraphQLList(UserType),
       async resolve(parent, args) {
-        const users = await user.findAll();
-        return users;
+        return await user.findAll();
       }
     }
   },
