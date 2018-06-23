@@ -54,13 +54,18 @@ router.post('/google_login', (req, res) => {
   user.socialAuth(userData, res);
 })
 
-router.post('/verify_token', async (req, res) => {
+router.post('/verify_token', (req, res) => {
   const { token } = req.body;
-  const decoded = jwt.verify(token, SERVER_SECRET);
-  const foundUser = await user.findById(decoded.id);
-  const refreshToken = jwt.sign({ id: foundUser.id }, SERVER_SECRET);
-  foundUser.token = refreshToken;
-  res.json(foundUser);
+  jwt.verify(token, SERVER_SECRET, async (error, decoded) => {
+    if (error) {
+      res.json({ error })
+    } else {
+      const foundUser = await user.findById(decoded.id);
+      const refreshToken = jwt.sign({ id: foundUser.id }, SERVER_SECRET);
+      foundUser.token = refreshToken;
+      res.json(foundUser);
+    }
+  });
 })
 
 module.exports = router;
