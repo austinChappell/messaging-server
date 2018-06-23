@@ -10,7 +10,7 @@ class Message extends ModelConstructor {
     this.tableName = 'messages';
   }
 
-  createTable() {
+  async createTable() {
     const sql = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         id SERIAL PRIMARY KEY,
@@ -22,7 +22,7 @@ class Message extends ModelConstructor {
       )
     `;
     const params = [];
-    dbAction(sql, params);
+    await dbAction(sql, params);
   }
   
   async pair(sender, recipient) {

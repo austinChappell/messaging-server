@@ -17,7 +17,10 @@ class MethodConstructor {
         RETURNING *
     `;
     const params = values;
-    const results = await dbRes(sql, params);
+    const results = await dbRes(sql, params)
+      .catch(err => {
+        throw err;
+      });
     return results[0];
   }
 

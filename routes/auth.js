@@ -142,9 +142,13 @@ router.post('/verify_token', (req, res) => {
       res.json({ error })
     } else {
       const foundUser = await user.findById(decoded.id);
-      const refreshToken = jwt.sign({ id: foundUser.id }, SERVER_SECRET);
-      foundUser.token = refreshToken;
-      res.json(foundUser);
+      if (foundUser) {
+        const refreshToken = jwt.sign({ id: foundUser.id }, SERVER_SECRET);
+        foundUser.token = refreshToken;
+        res.json(foundUser);
+      } else {
+        res.json({ error: 'token invalid' })
+      }
     }
   });
 })

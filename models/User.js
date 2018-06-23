@@ -32,18 +32,18 @@ class User extends ModelConstructor {
     this.tableName = 'users';
   }
 
-  createTable() {
+  async createTable() {
     const sql = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
         id SERIAL PRIMARY KEY,
         first_name varchar(50) NOT NULL,
         last_name varchar(50) NOT NULL,
-        email varchar(100) NOT NULL,
+        email varchar(100) NOT NULL UNIQUE,
         password_hash varchar(250) NOT NULL
       )
     `;
     const params = [];
-    dbAction(sql, params);
+    await dbAction(sql, params);
   }
 
   async findAll () {
@@ -90,10 +90,17 @@ class User extends ModelConstructor {
             email,
           }
           userObj[idKey] = socialAuthId;
-          const newUser = await this.create(userObj);
-          const token = jwt.sign({ id: newUser.id }, SERVER_SECRET);
-          newUser.token = token;
-          res.json(newUser);
+          try {
+            const newUser = await this.create(userObj)
+              .catch(err => {
+                throw err
+              });
+            const token = jwt.sign({ id: newUser.id }, SERVER_SECRET);
+            newUser.token = token;
+            res.json(newUser);
+          } catch (err) {
+            throw err;
+          }
         }
       }
     });

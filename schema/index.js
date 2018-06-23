@@ -16,8 +16,12 @@ const {
   GraphQLString,
 } = graphql;
 
-message.createTable();
-user.createTable();
+const createTables = async () => {
+  await user.createTable();
+  await message.createTable();
+}
+
+createTables();
 
 const MessageType = new GraphQLObjectType({
   name: 'message',
