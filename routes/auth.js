@@ -64,18 +64,24 @@ router.post('/signup', async (req, res) => {
     email,
   } = req.body;
 
-  const salt = bcrypt.genSaltSync(10);
-  const passwordHash = password ? bcrypt.hashSync(password, salt) : null;
-  const newUser = await user.create({
-    first_name: firstName,
-    last_name: lastName,
-    password_hash: passwordHash,
-    email: email.toLowerCase(),
-  });
-  if (newUser) {
-    res.json(newUser)
+  const preExistingUser = await user.findOne({ email });
+
+  if (preExistingUser) {
+    res.json({ error: 'User already exists with this email' })
   } else {
-    res.json({ error: 'There was a problem signing up' })
+    const salt = bcrypt.genSaltSync(10);
+    const passwordHash = password ? bcrypt.hashSync(password, salt) : null;
+    const newUser = await user.create({
+      first_name: firstName,
+      last_name: lastName,
+      password_hash: passwordHash,
+      email: email.toLowerCase(),
+    });
+    if (newUser) {
+      res.json(newUser)
+    } else {
+      res.json({ error: 'There was a problem signing up' })
+    }
   }
 }, passport.authenticate('local', {
   session: false,
@@ -86,54 +92,6 @@ router.post('/logout', (req, res) => {
   req.logout();
   // res.redirect('/');
 });
-
-router.post('/fb_login', async (req, res) => {
-  const {
-    name,
-    id: socialAuthId,
-    accessToken,
-    email,
-  } = req.body;
-  const nameSplit = name.split(' ');
-  const firstName = nameSplit[0];
-  const lastName = nameSplit[1];
-
-  const userData = {
-    socialAuthId,
-    firstName,
-    lastName,
-    email,
-    accessToken,
-    socialMediaLabel: 'facebook',
-  }
-
-  user.socialAuth(userData, res);
-})
-
-router.post('/google_login', (req, res) => {
-  const {
-    accessToken,
-    profileObj,
-  } = req.body;
-
-  const {
-    googleId: socialAuthId,
-    givenName: firstName,
-    familyName: lastName,
-    email,
-  } = profileObj;
-
-  const userData = {
-    socialAuthId,
-    firstName,
-    lastName,
-    email,
-    accessToken,
-    socialMediaLabel: 'google',
-  }
-
-  user.socialAuth(userData, res);
-})
 
 router.post('/verify_token', (req, res) => {
   const { token } = req.body;
