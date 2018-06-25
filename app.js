@@ -13,9 +13,16 @@ const io = require('socket.io')(server);
 
 const bodyParser = require('body-parser');
 
-const { PORT } = process.env;
+const {
+  PORT,
+} = process.env;
 
 const schema = require('./schema/');
+
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://messaging-app-client.herokuapp.com',
+];
 
 app.use(cors());
 
@@ -28,8 +35,12 @@ app.use(bodyParser.json({
 }));
 
 app.use((req, res, next) => {
+  const { origin } = req.headers;
+  if(allowedOrigins.indexOf(origin) > -1){
+       res.header('Access-Control-Allow-Origin', origin);
+  }
+
   res.header('Access-Control-Allow-Credentials', true);
-  res.header('Access-Control-Allow-Origin', process.env.CLIENT_URL);
   res.header('Access-Control-Allow-Headers', 'Content-Type, Accept');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
   res.header('Access-Control-Max-Age', 1728000);
