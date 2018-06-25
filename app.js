@@ -13,9 +13,7 @@ const io = require('socket.io')(server);
 
 const bodyParser = require('body-parser');
 
-const {
-  PORT,
-} = process.env;
+const PORT = process.env.PORT || 8000;
 
 const schema = require('./schema/');
 
