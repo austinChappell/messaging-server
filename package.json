@@ -24,5 +24,6 @@
     "pg": "^7.4.3",
     "request": "^2.87.0",
     "socket.io": "^2.1.1"
-  }
+  },
+  "devDependencies": {}
 }
